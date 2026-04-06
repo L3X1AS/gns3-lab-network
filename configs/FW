@@ -1,4 +1,6 @@
-Current configuration : 3474 bytes
+Current configuration : 3568 bytes
+!
+! Last configuration change at 23:41:15 UTC Sun Apr 5 2026
 !
 version 15.9
 service timestamps debug datetime msec
@@ -97,6 +99,7 @@ interface GigabitEthernet0/3
  media-type rj45
 !
 router ospf 1
+ network 10.0.0.0 0.0.0.3 area 0
  network 192.168.0.0 0.0.0.255 area 0
  network 192.168.10.0 0.0.0.255 area 0
  network 192.168.20.0 0.0.0.255 area 0
