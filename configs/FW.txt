@@ -1,13 +1,11 @@
-Current configuration : 3568 bytes
-!
-! Last configuration change at 23:41:15 UTC Sun Apr 5 2026
+Current configuration : 4475 bytes
 !
 version 15.9
 service timestamps debug datetime msec
 service timestamps log datetime msec
 no service password-encryption
 !
-hostname Router
+hostname FW
 !
 boot-start-marker
 boot-end-marker
@@ -33,6 +31,7 @@ mmi snmp-timeout 180
 !
 !
 !
+ip domain name lab.local
 ip cef
 no ipv6 cef
 !
@@ -41,6 +40,7 @@ multilink bundle-name authenticated
 !
 !
 !
+username admin privilege 15 secret 9 $9$LkEzn5InD1Fkdv$frTNgmgkBNb41BDkvbvNW.mX2R33McHtYEdJL.nMUZ2
 !
 redundancy
 !
@@ -67,16 +67,19 @@ interface GigabitEthernet0/0
 interface GigabitEthernet0/0.10
  encapsulation dot1Q 10
  ip address 192.168.10.1 255.255.255.0
+ ip access-group 100 in
  ip helper-address 192.168.0.10
 !
 interface GigabitEthernet0/0.20
  encapsulation dot1Q 20
  ip address 192.168.20.1 255.255.255.0
+ ip access-group 100 in
  ip helper-address 192.168.0.10
 !
 interface GigabitEthernet0/0.30
  encapsulation dot1Q 30
  ip address 192.168.30.1 255.255.255.0
+ ip access-group 100 in
  ip helper-address 192.168.0.10
 !
 interface GigabitEthernet0/1
@@ -111,9 +114,24 @@ ip forward-protocol nd
 no ip http server
 no ip http secure-server
 ip route 0.0.0.0 0.0.0.0 10.0.0.1
+ip ssh version 2
 !
 ipv6 ioam timestamp
 !
 !
+access-list 100 permit udp any any eq bootps
+access-list 100 permit udp any any eq bootpc
+access-list 100 deny   ip 192.168.10.0 0.0.0.255 192.168.30.0 0.0.0.255
+access-list 100 deny   ip 192.168.10.0 0.0.0.255 192.168.20.0 0.0.0.255
+access-list 100 permit ip 192.168.10.0 0.0.0.255 any
+access-list 100 deny   ip 192.168.20.0 0.0.0.255 192.168.30.0 0.0.0.255
+access-list 100 deny   ip 192.168.20.0 0.0.0.255 192.168.10.0 0.0.0.255
+access-list 100 permit ip 192.168.20.0 0.0.0.255 any
+access-list 100 deny   ip 192.168.30.0 0.0.0.255 192.168.20.0 0.0.0.255
+access-list 100 deny   ip 192.168.30.0 0.0.0.255 192.168.10.0 0.0.0.255
+access-list 100 permit tcp 192.168.30.0 0.0.0.255 host 192.168.0.1 eq 22
+access-list 100 permit ip 192.168.30.0 0.0.0.255 any
 !
 control-plane
+!
+banner exec ^C
