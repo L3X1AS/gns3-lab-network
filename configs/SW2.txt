@@ -30,8 +30,9 @@ no ipv6 cef
 !
 !
 !
-spanning-tree mode pvst
+spanning-tree mode rapid-pvst
 spanning-tree extend system-id
+spanning-tree vlan 1,10,20,30 priority 28672
 !
 !
 !
@@ -59,6 +60,9 @@ interface GigabitEthernet0/2
  negotiation auto
 !
 interface GigabitEthernet0/3
+ switchport trunk allowed vlan 1,10,20,30
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
  negotiation auto
 !
 interface GigabitEthernet1/0
