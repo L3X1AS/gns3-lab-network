@@ -13,13 +13,15 @@ Lab réseau monté en autonomie dans le cadre de ma préparation
 |---|---|---|
 | R1 | Routeur WAN | 10.0.0.1 / DHCP WAN |
 | FW | Firewall / Inter-VLAN | 10.0.0.2 / 192.168.0.1 |
-| SW-DISTRIB | Switch distribution (root bridge STP) | — |
-| SW-CORE | Switch cœur (STP secondary) | — |
-| SW-CORE-2 | Switch cœur redondant (STP secondary) | — |
-| SW1/2/3 | Switches d'accès | — |
+| SW-DISTRIB | Switch distribution (root bridge STP) | 192.168.30.200 |
+| SW-CORE | Switch cœur (STP secondary) | 192.168.30.201 |
+| SW-CORE-2 | Switch cœur redondant (STP secondary) | 192.168.30.202 |
+| SW1 | Switch accès VLAN 10 | 192.168.30.203 |
+| SW2 | Switch accès VLAN 20 | 192.168.30.204 |
+| SW3 | Switch accès VLAN 30 | 192.168.30.205 |
 | SW-DMZ | Switch DMZ | — |
 | Windows Server 2022 | DHCP + DNS | 192.168.0.10 |
-| Ubuntu 24.04 | Client VLAN 30 | DHCP |
+| Ubuntu 24.04 | Client VLAN 30 + Ansible | DHCP |
 
 ## Ce qui est configuré
 
@@ -30,10 +32,21 @@ Lab réseau monté en autonomie dans le cadre de ma préparation
 - OSPF area 0 entre R1 et FW
 - DMZ avec Windows Server 2022
 - ACLs étendues — isolation inter-VLAN
-- SSH sur le FW (domaine lab.local)
+- SSH sur tous les équipements (domaine lab.local)
 - DNS interne — zone lab.local
 - Redondance L2 — architecture 3 tiers avec STP/RSTP
 - SW-DISTRIB → SW-CORE + SW-CORE-2 avec basculement automatique
+- **Automatisation Ansible — backup automatique de toute la topologie**
+
+## Automatisation Ansible
+
+Backup automatique de tous les équipements en une seule commande :
+
+```bash
+ansible-playbook -i ansible/inventory.ini ansible/backup.yml
+```
+
+Génère un fichier de backup par équipement dans `ansible/backups/`.
 
 ## Plan d'adressage
 
@@ -43,7 +56,7 @@ Lab réseau monté en autonomie dans le cadre de ma préparation
 | 192.168.0.0/24 | DMZ |
 | 192.168.10.0/24 | VLAN 10 |
 | 192.168.20.0/24 | VLAN 20 |
-| 192.168.30.0/24 | VLAN 30 |
+| 192.168.30.0/24 | VLAN 30 + Management switches |
 
 ## Limitations connues
 
@@ -57,6 +70,7 @@ Lab réseau monté en autonomie dans le cadre de ma préparation
 - Cisco IOSvL2 15.2.1
 - Windows Server 2022
 - Ubuntu Desktop 24.04
+- Ansible 2.20.4
 
 ## Objectif
 

@@ -8,13 +8,15 @@ service timestamps log datetime msec
 no service password-encryption
 service compress-config
 !
-hostname Switch
+hostname sw3
 !
 boot-start-marker
 boot-end-marker
 !
 !
+enable secret 5 $1$f/Rg$MKQ8xOXDB5p1qPCpvyBIO/
 !
+username admin password 0 cisco
 no aaa new-model
 !
 !
@@ -102,9 +104,10 @@ interface GigabitEthernet3/2
 interface GigabitEthernet3/3
  negotiation auto
 !
-ip forward-protocol nd
+interface Vlan30
+ ip address 192.168.30.205 255.255.255.0
 !
-ip http server
+ip forward-protocol nd
 !
 ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
 ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
